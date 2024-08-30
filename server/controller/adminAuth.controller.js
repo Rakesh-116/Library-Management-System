@@ -21,10 +21,3 @@ export const signinAdm=async(req,res)=> {
     }
 }
 
-export const loginAdm=async(req,res)=> {
-    try {
-        
-    } catch (error) {
-        
-    }
-}

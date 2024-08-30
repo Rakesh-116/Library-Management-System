@@ -3,32 +3,50 @@ import bcrypt from "bcryptjs";
 
 const prisma=new PrismaClient();
 
-export const signin=async(req,res)=> {
+export const signin = async (req, res) => {
     try {
-        const {username,password}=req.body;
+        const { username, fullname, email, password } = req.body;
+        const existingUser = await prisma.user.findUnique({
+            where: { username },
+        });
 
-        const hashedPassword=await bcrypt.hash(password,10);
+        if (existingUser) {
+            return res.status(400).json({
+                error: "User with the same username already exists",
+            });
+        }
+        const existingEmail = await prisma.user.findUnique({
+            where: { email },
+        });
 
-        const user=await prisma.user.create({
-            data:{
+        if (existingEmail) {
+            return res.status(400).json({
+                error: "Email is already in use",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await prisma.user.create({
+            data: {
                 username,
-                password:hashedPassword,
-                role:"USER"
+                fullname,
+                email,
+                password: hashedPassword,
+                registration_date: new Date(), 
             },
-           });
-           res.json({
-            user,
-            msg:"user created succesfull"
-           })
-    } catch (error) {
-        res.status(400).json({error:error.message});
-    }
-}
+        });
 
-export const login=async(req,res)=> {
-    try {
-        
+        res.status(201).json({
+            msg: "User has been created successfully",
+            user,
+        });
+
     } catch (error) {
-        
+        console.error(error);
+        res.status(500).json({
+            error: "Failed to create a user",
+        });
     }
-}
+};
+
