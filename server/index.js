@@ -2,22 +2,21 @@ import express from "express";
 import cors from "cors"
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import userAuth from "./route/userAuth.route.js"; 
+import userAuth from "./route/userAuth.route.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 
-const prisma=new PrismaClient();
+const prisma = new PrismaClient();
 
 dotenv.config();
 
-const PORT=3000;
-const app=express();
+const PORT = 3000;
+const app = express();
 app.use(express.json());
 app.use(cors());
 
 
 //route for the user
-app.use("/auth/user",userAuth);
-
+app.use("/auth/user", userAuth);
 
 
 //login 
@@ -47,6 +46,16 @@ app.post("/auth/login", async (req, res) => {
         res.status(500).json({ error: "Login failed" });
     }
 });
-app.listen(PORT,()=> {
+
+app.get("/user/books", async (req, res) => {
+    try {
+        const books = await prisma.book.findMany();
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
+
+app.listen(PORT, () => {
     console.log(`server is running on PORT ${PORT}`);
 })
