@@ -22,7 +22,7 @@ const Login = ({ setRole, setLoggedInUser }) => {
   return (
     <div>
       <h2>Login</h2>
-      
+
       <input
         type="password"
         placeholder="Password"

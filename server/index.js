@@ -18,8 +18,52 @@ app.use(cors());
 //route for the user
 app.use("/auth/user", userAuth);
 
+app.get("/api/user/books", async (req, res) => {
+    try {
+        const books = await prisma.book.findMany();
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
 
-//login 
+app.get("/api/user/collections", async (req, res) => {
+    try {
+        const collections = await prisma.book.findMany({
+            where: {
+                BorrowedBooks: {
+                    some: {} // This ensures that only books with at least one BorrowedBook record are fetched
+                }
+            },
+            include: {
+                BorrowedBooks: true,
+            }
+        })
+        res.json(collections)
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch borrowed books" })
+    }
+})
+
+app.get("/api/user/requests", async (req, res) => {
+    try {
+        const requests = await prisma.book.findMany({
+            where: {
+                BorrowRequests: {
+                    some: {} // This ensures that only books with at least one BorrowedBook record are fetched
+                }
+            },
+            include: {
+                BorrowRequests: true
+            }
+        })
+        res.json(requests)
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch user requests" })
+    }
+})
+
+// Login
 app.post("/auth/login", async (req, res) => {
     const { username, password } = req.body;
 
@@ -47,14 +91,13 @@ app.post("/auth/login", async (req, res) => {
     }
 });
 
-app.get("/user/books", async (req, res) => {
+app.post("/api/user/bookRequest", async (req, res) => {
     try {
-        const books = await prisma.book.findMany();
-        res.json(books);
+
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch books" });
+        res.status(500).json({ error: "Failed to post borrow request" })
     }
-});
+})
 
 app.listen(PORT, () => {
     console.log(`server is running on PORT ${PORT}`);
