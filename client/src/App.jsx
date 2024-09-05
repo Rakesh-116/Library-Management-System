@@ -10,8 +10,9 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login setRole={setRole} />} />
-          <Route path='/user' element={<Home role={role} />} />
+          <Route path='/' element={<Login setRole={setRole} />} />
+          <Route path='/user/home' element={<Home role={role} />} />
+          <Route path='/user/collection' element={<MyCollection role={role} />} />
           <Route path='/admin' element={<Home role={role} />} />
         </Routes>
       </BrowserRouter>
