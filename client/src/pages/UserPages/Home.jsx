@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/UserComponents/Navbar";
 
-const Home = () => {
+const Home = ({role}) => {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const Home = () => {
     return (
         <>
             <div className="bg-slate-300 min-h-screen pb-10">
-                <Navbar />
+                <Navbar role={role}/>
                 <div className="flex-wrap flex w-100">
                     {books.map((book) => (
                         <div key={book.book_id} className="bg-white rounded shadow-md m-4 p-4">
