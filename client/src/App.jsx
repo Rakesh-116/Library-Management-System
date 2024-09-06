@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/UserPages/Home'
 import Login from './components/Login'
 import MyCollection from './pages/UserPages/MyCollection'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function App() {
   const [role, setRole] = useState(() => {

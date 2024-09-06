@@ -27,7 +27,7 @@ const Login = ({ setRole }) => {
         setError('Invalid role');
       }
     } catch (err) {
-      setError('Invalid username or password', err);
+      setError('Invalid username or password');
     }
   };
 
