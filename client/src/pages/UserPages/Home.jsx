@@ -20,7 +20,17 @@ const Home = ({ role }) => {
 
     const addRequest = async (id) => {
         try {
-            await axios.post("/api/user/bookRequest", { id });
+            const response = await axios.post('/api/user/bookRequest', {
+                bookId: parseInt(id),
+                userId: parseInt(localStorage.getItem('userId'))
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(response.data);
+            alert("Book requested successfully")
         } catch (error) {
             console.error("Error requesting book:", error);
         }
@@ -38,8 +48,8 @@ const Home = ({ role }) => {
                             <p>Available Copies: {book.copies_available}</p>
                             {role == 'admin' ? (
                                 <>
-                                    <button onClick={() => addRequest(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded">Update</button>
-                                    <button onClick={() => addRequest(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded ml-2">Delete</button>
+                                    <button onClick={() => updateBook(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded">Update</button>
+                                    <button onClick={() => deleteBook(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded ml-2">Delete</button>
                                 </>
                             ) : (
                                 <button onClick={() => addRequest(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded">Request Borrow</button>

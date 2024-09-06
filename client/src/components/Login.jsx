@@ -18,6 +18,9 @@ const Login = ({ setRole }) => {
       });
       const { role } = res.data;
       setRole(role);
+      const { user } = res.data;
+      localStorage.setItem('userId', user.user_id)
+      // console.log(localStorage.getItem('userId'))
 
       if (role === 'admin') {
         navigate('/admin/home');

@@ -10,7 +10,8 @@ const MyCollection = () => {
 
     const fetchCollections = async () => {
         try {
-            const response = await axios.get("/api/user/collections");
+            const userId = localStorage.getItem('userId')
+            const response = await axios.get(`/api/user/collections/${userId}`);
             setCollections(response.data);
             setIsCollectionClicked(true);
             setIsRequestClicked(false);
@@ -21,7 +22,8 @@ const MyCollection = () => {
 
     const fetchRequests = async () => {
         try {
-            const response = await axios.get("/api/user/requests");
+            const userId = localStorage.getItem('userId')
+            const response = await axios.get(`/api/user/requests/${userId}`);
             setRequests(response.data);
             setIsRequestClicked(true);
             setIsCollectionClicked(false);

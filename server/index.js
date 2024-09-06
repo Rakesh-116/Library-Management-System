@@ -27,12 +27,15 @@ app.get("/api/user/books", async (req, res) => {
     }
 });
 
-app.get("/api/user/collections", async (req, res) => {
+app.get("/api/user/collections/:userId", async (req, res) => {
     try {
+        const { userId } = req.params
         const collections = await prisma.book.findMany({
             where: {
                 BorrowedBooks: {
-                    some: {} // This ensures that only books with at least one BorrowedBook record are fetched
+                    some: {
+                        user_id: parseInt(userId)
+                    }
                 }
             },
             include: {
@@ -45,12 +48,15 @@ app.get("/api/user/collections", async (req, res) => {
     }
 })
 
-app.get("/api/user/requests", async (req, res) => {
+app.get("/api/user/requests/:userId", async (req, res) => {
     try {
+        const { userId } = req.params
         const requests = await prisma.book.findMany({
             where: {
                 BorrowRequests: {
-                    some: {} // This ensures that only books with at least one BorrowedBook record are fetched
+                    some: {
+                        user_id: parseInt(userId)
+                    }
                 }
             },
             include: {
@@ -98,9 +104,23 @@ app.post("/api/auth/login", async (req, res) => {
     }
 });
 
-app.post("/api/user/bookRequest", async (req, res) => {
+app.post("/api/user/bookRequest/", async (req, res) => {
     try {
-
+        const { bookId, userId } = req.body;
+        console.log("Book ID:", bookId);
+        console.log("User ID:", userId);
+        const bookRequest = await prisma.borrowRequest.create({
+            data: {
+                user_id: userId,
+                book_id: bookId,
+                request_date: new Date(),
+                status: "pending"
+            }
+        })
+        res.send({
+            msg: "Book Request is succesfull",
+            bookRequest
+        })
     } catch (error) {
         res.status(500).json({ error: "Failed to post borrow request" })
     }
