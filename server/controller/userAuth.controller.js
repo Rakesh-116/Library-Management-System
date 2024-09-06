@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-const prisma=new PrismaClient();
+const prisma = new PrismaClient();
 
 export const signin = async (req, res) => {
     try {
@@ -33,7 +33,7 @@ export const signin = async (req, res) => {
                 fullname,
                 email,
                 password: hashedPassword,
-                registration_date: new Date(), 
+                registration_date: new Date(),
             },
         });
 
@@ -45,7 +45,7 @@ export const signin = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            error: "Failed to create a user",
+            error: `Failed to create a user : \n ${error}`,
         });
     }
 };
