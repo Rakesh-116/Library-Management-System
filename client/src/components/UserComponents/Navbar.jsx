@@ -13,7 +13,7 @@ const Navbar = ({ role }) => {
                         <>
                             <button onClick={() => { navigate('/admin/home') }} className="mx-2 hover:bg-gray-600 px-4 py-2 rounded">Home</button>
                             <button onClick={() => { navigate('/admin/addBook') }} className="mx-2 hover:bg-gray-600 px-4 py-2 rounded">Add Books</button>
-                            <button onClick={() => { navigate('/admin/addBook') }} className="mx-2 hover:bg-gray-600 px-4 py-2 rounded">Pending Requests</button>
+                            <button onClick={() => { navigate('/admin/pending') }} className="mx-2 hover:bg-gray-600 px-4 py-2 rounded">Pending Requests</button>
                         </>
                     ) : (
                         <>

@@ -68,8 +68,9 @@ app.get("/api/user/requests", async (req, res) => {
 })
 
 // Login
-app.post("/auth/login", async (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body;
+    console.log(req.body);
 
     try {
         let user = await prisma.user.findUnique({ where: { username } });

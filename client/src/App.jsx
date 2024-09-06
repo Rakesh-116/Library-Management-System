@@ -3,10 +3,18 @@ import Home from './pages/UserPages/Home'
 import Login from './components/Login'
 import MyCollection from './pages/UserPages/MyCollection'
 import { useState } from 'react'
-import AddBook from './pages/AdminPages/AddBook'
 
 function App() {
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState(() => {
+    return localStorage.getItem('role') || '';
+  });
+
+  useEffect(() => {
+    if (role) {
+      localStorage.setItem('role', role);
+    }
+  }, [role]);
+
   return (
     <>
       <BrowserRouter>
