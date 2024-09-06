@@ -37,3 +37,27 @@ export const bookBook=async(req,res)=> {
     res.status(400).json({error:"Error during booking"})
   }
 }
+
+export const addBooks=async(req,res)=> {
+    const {title,author,copies_available,total_copies,added_date}=req.body;
+
+    try {
+        if(!title || !author || !copies_available || !total_copies || !added_date) {
+            return res.status(400).json({error:"all fields are required"});
+        }
+
+        const newBook=await prisma.book.create({
+            data: {
+                title,
+                author,
+                copies_available,
+                total_copies,
+                added_date:new Date(added_date),
+            },
+        });
+        res.status(201).json(newBook);
+    } catch (error) {
+        console.error('error while adding book: ',error);
+        res.status(500).json({error:"Failed to add the Book"})
+    }
+}
