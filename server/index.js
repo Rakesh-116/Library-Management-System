@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import userAuth from "./route/userAuth.route.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
+import addBook from "./route/addBook.route.js";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,9 @@ app.use(cors());
 
 //route for the user
 app.use("/auth/user", userAuth);
+
+//route for adding books
+app.use("/auth/admin",addBook);
 
 app.get("/api/user/books", async (req, res) => {
     try {
