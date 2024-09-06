@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import userAuth from "./route/userAuth.route.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
+import addBook from "./route/addBook.route.js";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,9 @@ app.use(cors());
 
 //route for the user
 app.use("/auth/user", userAuth);
+
+//route for adding books
+app.use("/auth/admin",addBook);
 
 app.get("/api/user/books", async (req, res) => {
     try {
@@ -64,8 +68,9 @@ app.get("/api/user/requests", async (req, res) => {
 })
 
 // Login
-app.post("/auth/login", async (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body;
+    console.log(req.body);
 
     try {
         let user = await prisma.user.findUnique({ where: { username } });
