@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/UserComponents/Navbar";
 
-const Home = ({role}) => {
+const Home = ({ role }) => {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
@@ -28,9 +28,13 @@ const Home = ({role}) => {
                     'Content-Type': 'application/json'
                 }
             });
-
-            console.log(response.data);
-            alert("Book requested successfully")
+            console.log(response.data)
+            // if (response.data === "Book Already Requested") {
+            //     alert("Book Already Requested");
+            // } else {
+            //     console.log(response.data);
+            //     alert("Book requested successfully")
+            // }
         } catch (error) {
             console.error("Error requesting book:", error);
         }
@@ -39,7 +43,7 @@ const Home = ({role}) => {
     return (
         <>
             <div className="bg-slate-300 min-h-screen pb-10">
-            <Navbar role={role}/>
+                <Navbar role={role} />
                 <div className="flex-wrap flex w-100">
                     {books.map((book) => (
                         <div key={book.book_id} className="bg-white rounded shadow-md m-4 p-4">

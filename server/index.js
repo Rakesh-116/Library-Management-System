@@ -20,7 +20,7 @@ app.use(cors());
 app.use("/auth/user", userAuth);
 
 //route for adding books
-app.use("/auth/admin",addBook);
+app.use("/auth/admin", addBook);
 
 app.get("/api/user/books", async (req, res) => {
     try {
@@ -54,24 +54,52 @@ app.get("/api/user/collections/:userId", async (req, res) => {
 
 app.get("/api/user/requests/:userId", async (req, res) => {
     try {
-        const { userId } = req.params
-        const requests = await prisma.book.findMany({
+        const { userId } = req.params;
+
+        const requests = await prisma.borrowRequest.findMany({
             where: {
-                BorrowRequests: {
-                    some: {
-                        user_id: parseInt(userId)
-                    }
-                }
+                user_id: parseInt(userId)
             },
             include: {
-                BorrowRequests: true
+                Book: {
+                    select: {
+                        book_id: true,
+                        title: true,
+                        author: true
+                    }
+                }
             }
-        })
-        res.json(requests)
+        });
+
+        const response = requests.map(request => ({
+            request_id: request.request_id,
+            book: {
+                book_id: request.Book.book_id,
+                title: request.Book.title,
+                author: request.Book.author
+            },
+            status: request.status
+        }));
+
+        res.json(response);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch user requests" })
+        res.status(500).json({ error: "Failed to fetch user requests" });
+    }
+});
+
+app.delete('/api/user/requests/:requestId', async (req, res) => {
+    try {
+        const { requestId } = req.params
+        await prisma.borrowRequest.delete({
+            where: {
+                request_id: parseInt(requestId)
+            },
+        })
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete request" });
     }
 })
+
 
 // Login
 app.post("/api/auth/login", async (req, res) => {
@@ -113,6 +141,18 @@ app.post("/api/user/bookRequest/", async (req, res) => {
         const { bookId, userId } = req.body;
         console.log("Book ID:", bookId);
         console.log("User ID:", userId);
+
+        // const requestCheck = await prisma.borrowRequest.findFirst({
+        //     where: {
+        //         userId: userId,
+        //         bookId: bookId
+        //     }
+        // })
+
+        // if (requestCheck) {
+        //     return res.status(400).json({ error: "Book Already Requested" });
+        // }
+
         const bookRequest = await prisma.borrowRequest.create({
             data: {
                 user_id: userId,
@@ -121,7 +161,7 @@ app.post("/api/user/bookRequest/", async (req, res) => {
                 status: "pending"
             }
         })
-        res.send({
+        res.json({
             msg: "Book Request is succesfull",
             bookRequest
         })

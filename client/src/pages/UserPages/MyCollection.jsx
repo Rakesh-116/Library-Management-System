@@ -24,6 +24,7 @@ const MyCollection = () => {
         try {
             const userId = localStorage.getItem('userId')
             const response = await axios.get(`/api/user/requests/${userId}`);
+            // console.log(response.data)
             setRequests(response.data);
             setIsRequestClicked(true);
             setIsCollectionClicked(false);
@@ -35,6 +36,18 @@ const MyCollection = () => {
     useEffect(() => {
         fetchCollections();
     }, []);
+
+    const deleteRequest = async (id) => {
+        if (window.confirm("Are you sure you want to delete this request?")) {
+            try {
+                axios.delete(`/api/user/requests/${id}`);
+                console.log("Request Deleted")
+                fetchRequests();
+            } catch (error) {
+                console.error(`Error deleting request: ${error}`);
+            }
+        }
+    };
 
     return (
         <div className="bg-yellow-50 min-h-screen pb-10">
@@ -69,10 +82,11 @@ const MyCollection = () => {
             {isRequestClicked && (
                 <div className="flex flex-wrap justify-center w-100">
                     {requests.map((book) => (
-                        <div key={book.book_id} className="bg-white rounded shadow-md m-4 p-4">
-                            <p>Book Name: {book.title}</p>
-                            <p>Author Name: {book.author}</p>
-                            <p>Status: {book.BorrowRequests[0].status}</p>
+                        <div key={book.book.book_id} className="bg-white rounded shadow-md m-4 p-4">
+                            <p>Book Name: {book.book.title}</p>
+                            <p>Author Name: {book.book.author}</p>
+                            <p>Status: {book.status}</p>
+                            <button onClick={() => deleteRequest(book.request_id)} className="bg-red-600 hover:bg-red-500 px-4 py-2 mt-6 text-white rounded">Delete</button>
                         </div>
                     ))}
                 </div>
