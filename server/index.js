@@ -170,6 +170,45 @@ app.post("/api/user/bookRequest/", async (req, res) => {
     }
 })
 
+//route for updating book
+app.put("/api/admin/books/:id", async (req, res) => {
+    const { id } = req.params;
+    const { title, author, copies_available, total_copies } = req.body;
+
+    try {
+        const updatedBook = await prisma.book.update({
+            where: { book_id: parseInt(id) },
+            data: {
+                title,
+                author,
+                copies_available,
+                total_copies,
+            }
+        })
+        res.json(updatedBook);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "failed to update Book" });
+
+    }
+})
+
+//route for deleting a book
+app.delete("/api/admin/books/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedBook = await prisma.book.delete({
+            where: {
+                book_id: parseInt(id)
+            },
+        });
+        res.json(deletedBook);
+    } catch (error) {
+        console.error('Error updating book:', error.message);
+        res.status(500).json({ error: "failed to update Book", details: error.message });
+    }
+})
 app.listen(PORT, () => {
     console.log(`server is running on PORT ${PORT}`);
 })
