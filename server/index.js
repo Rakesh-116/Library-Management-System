@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import userAuth from "./route/userAuth.route.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import addBook from "./route/addBook.route.js";
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient();
 
@@ -137,26 +138,25 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.post("/api/user/bookRequest/", async (req, res) => {
+    const { bookId, userId } = req.body;
+    console.log("Book ID:", bookId);
+    console.log("User ID:", userId);
     try {
-        const { bookId, userId } = req.body;
-        console.log("Book ID:", bookId);
-        console.log("User ID:", userId);
+        const requestCheck = await prisma.borrowRequest.findFirst({
+            where: {
+                user_id: parseInt(userId),
+                book_id: parseInt(bookId)
+            }
+        })
 
-        // const requestCheck = await prisma.borrowRequest.findFirst({
-        //     where: {
-        //         userId: userId,
-        //         bookId: bookId
-        //     }
-        // })
-
-        // if (requestCheck) {
-        //     return res.status(400).json({ error: "Book Already Requested" });
-        // }
+        if (requestCheck) {
+            return res.status(400).json({ error: "Book Already Requested" });
+        }
 
         const bookRequest = await prisma.borrowRequest.create({
             data: {
-                user_id: userId,
-                book_id: bookId,
+                user_id: parseInt(userId),
+                book_id: parseInt(bookId),
                 request_date: new Date(),
                 status: "pending"
             }
@@ -205,10 +205,28 @@ app.delete("/api/admin/books/:id", async (req, res) => {
         });
         res.json(deletedBook);
     } catch (error) {
-        console.error('Error updating book:', error.message);
+        console.error('Error deleting book:', error.message);
         res.status(500).json({ error: "failed to update Book", details: error.message });
     }
 })
+
+app.get('/api/user/profile/:userId', async (req, res) => {
+    const { userId } = req.params
+    try {
+        const userDetails = await prisma.user.findFirst({
+            where: {
+                user_id: parseInt(userId)
+            }
+        })
+        res.json(userDetails)
+    } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+        res.status(500).json({
+            error: "failed to fetch user profile", details: error
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`server is running on PORT ${PORT}`);
 })

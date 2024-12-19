@@ -4,6 +4,7 @@ import Login from './components/Login'
 import MyCollection from './pages/UserPages/MyCollection'
 import { useState, useEffect } from 'react'
 import AddBook from './pages/AdminPages/AddBook'
+import Profile from './pages/UserPages/Profile'
 
 function App() {
   const [role, setRole] = useState(() => {
@@ -22,7 +23,8 @@ function App() {
         <Routes>
           <Route path='/' element={<Login setRole={setRole} />} />
           <Route path='/user/home' element={<Home role={role} />} />
-          <Route path='/user/collection' element={<MyCollection role={role} />} />
+          <Route path='/user/collection' element={<MyCollection />} />
+          <Route path='/user/profile' element={<Profile />} />
           <Route path='/admin/home' element={<Home role={role} />} />
           <Route path='/admin/addBook' element={<AddBook role={role} />} />
         </Routes>

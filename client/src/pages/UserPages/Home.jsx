@@ -32,13 +32,13 @@ const Home = ({ role }) => {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response.data)
-            // if (response.data === "Book Already Requested") {
-            //     alert("Book Already Requested");
-            // } else {
-            //     console.log(response.data);
-            //     alert("Book requested successfully")
-            // }
+            const { msg } = response.data
+            if (msg === "Book Request is succesfull") {
+                console.log(response.data);
+                alert("Book requested successfully")
+            } else {
+                alert("Book Already Requested");
+            }
         } catch (error) {
             console.error("Error requesting book:", error);
         }
@@ -56,7 +56,7 @@ const Home = ({ role }) => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`/api/admin / books / ${id}`);
+            await axios.delete(`/api/admin/books/${id}`);
             setBooks(books.filter((book) => book.book_id !== id));
         } catch (error) {
             console.error("error deleting book: ", error);
@@ -75,7 +75,7 @@ const Home = ({ role }) => {
                             <p>Available Copies: {book.copies_available}</p>
                             {role == 'admin' ? (
                                 <>
-                                    <button onClick={() => handleUpdateClick(book)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded">Update</button>
+                                    <button onClick={() => handleUpdateClick(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded">Update</button>
                                     <button onClick={() => handleDelete(book.book_id)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 mt-6 text-white rounded ml-2">Delete</button>
                                 </>
                             ) : (
